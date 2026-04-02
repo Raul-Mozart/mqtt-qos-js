@@ -14,14 +14,14 @@ const client = mqtt.connect("mqtt://localhost:1883", options);
 
 client.on("connect", (connack) => {
   // connack.sessionPresent indica se o Broker já tinha sua sessão guardada
-  console.log(`SUB QoS1: conectado (Sessão recuperada: ${connack.sessionPresent})`);
+  console.log(`SUB reservatório: conectado (Sessão recuperada: ${connack.sessionPresent})`);
   
   // No QoS 1 com clean:false, você só precisa dar subscribe uma vez na vida.
   // Mas deixar aqui garante que o tópico seja assinado na primeira execução.
   
-  client.subscribe("aula/qos", { qos: 1 });
+  client.subscribe("estufa/agua/nivel", { qos: 1 });
 });
 
 client.on("message", (topic, msg) => {
-  console.log("SUB QoS1 recebeu:", msg.toString());
+  console.log("SUB reservatório recebeu:", msg.toString());
 });

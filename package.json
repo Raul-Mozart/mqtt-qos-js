@@ -2,5 +2,13 @@
   "name": "mqtt-qos-aula",
   "version": "1.0.0",
   "type": "module",
+  "scripts": {
+    "reset:logs": "node resetLogs.js",
+    "sub:monitor": "node subPersistenteFire.js",
+    "pub:temp": "node pubTemp.js",
+    "pub:agua": "node pubReserv.js",
+    "pub:fire": "node pubPersistenteFire.js",
+    "relatorio": "node relatorioDesafio.js"
+  },
   "dependencies": { "mqtt": "^5.0.0" }
 }
