@@ -8,7 +8,11 @@
     "pub:temp": "node pubTemp.js",
     "pub:agua": "node pubReserv.js",
     "pub:fire": "node pubPersistenteFire.js",
-    "relatorio": "node relatorioDesafio.js"
+    "relatorio": "node relatorioDesafio.js",
+    "pub:retain": "node retain.js",
+    "sub:retain": "node subRetain.js",
+    "pub:lwt": "node lwt.js",
+    "sub:lwt": "node subLwt.js"
   },
   "dependencies": { "mqtt": "^5.0.0" }
 }
