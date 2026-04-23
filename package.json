@@ -12,7 +12,12 @@
     "pub:retain": "node retain.js",
     "sub:retain": "node subRetain.js",
     "pub:lwt": "node lwt.js",
-    "sub:lwt": "node subLwt.js"
+    "sub:lwt": "node subLwt.js",
+    "pub:casa:sala:q0": "node pubCasaSalaQos0.js",
+    "pub:casa:cozinha:q1": "node pubCasaCozinhaQos1.js",
+    "pub:casa:garagem:q2": "node pubCasaGaragemQos2.js",
+    "pub:casa:quarto:retain": "node pubCasaQuartoRetain.js",
+    "pub:casa:escritorio:lwt": "node pubCasaEscritorioLwt.js"
   },
   "dependencies": { "mqtt": "^5.0.0" }
 }

@@ -118,3 +118,70 @@ Como demonstrar no projeto:
 - Retain: quando o foco e preservar e entregar o ultimo estado conhecido para novos assinantes.
 - LWT: quando o foco e detectar desconexao inesperada de clientes.
 - Em sistemas reais, os dois normalmente aparecem juntos: dispositivo publica `online` com retain e configura LWT para `offline`.
+
+## Parte 4 (5 topicos de casa para Node-RED)
+
+Foram adicionados 5 scripts novos com topicos separados por ambiente da casa.
+
+1. QoS 0 (telemetria rapida)
+	- Topico: `casa/sala/temperatura`
+	- Arquivo: `pubCasaSalaQos0.js`
+	- Script: `npm run pub:casa:sala:q0`
+
+2. QoS 1 (entrega ao menos uma vez)
+	- Topico: `casa/cozinha/temperatura` (HiveMQ)
+	- Arquivo: `pubCasaCozinhaQos1.js`
+	- Script: `npm run pub:casa:cozinha:q1`
+	- Broker opcional: `HIVEMQ_BROKER_URL=mqtt://broker.hivemq.com:1883 npm run pub:casa:cozinha:q1`
+
+3. QoS 2 (entrega exatamente uma vez)
+	- Topico: `casa/garagem/portao`
+	- Arquivo: `pubCasaGaragemQos2.js`
+	- Script: `npm run pub:casa:garagem:q2`
+
+4. Retain (ultimo estado conhecido)
+	- Topico: `casa/quarto/ar/status`
+	- Arquivo: `pubCasaQuartoRetain.js`
+	- Script: `npm run pub:casa:quarto:retain`
+	- Limpar retain: `CLEAR_RETAIN=true npm run pub:casa:quarto:retain`
+
+5. LWT (offline automatico)
+	- Topico: `casa/escritorio/presenca/status`
+	- Arquivo: `pubCasaEscritorioLwt.js`
+	- Script: `npm run pub:casa:escritorio:lwt`
+	- Opcional (tempo de queda): `ABRUPT_MS=8000 npm run pub:casa:escritorio:lwt`
+
+### Sugestao para plugar no Node-RED
+
+- Crie 5 nós MQTT-in (um para cada topico).
+- Para os 3 primeiros topicos (QoS 0/1/2), trate como fluxo de dados de sensores/atuadores.
+- Para retain, conecte um debug/dashboard para ver o estado atual chegando imediatamente ao reiniciar o fluxo.
+- Para LWT, observe transicao de `online/ativo` para `offline` quando a queda abrupta for simulada.
+
+### Acesso externo no Codespaces (Cloudflare) para os topicos 3 e 5
+
+Quando o Node-RED estiver fora do Codespace (ex.: FlowFuse), use WebSocket do Mosquitto via tunnel Cloudflare.
+
+1. Suba o broker:
+	- `docker compose up -d`
+
+2. Rode um tunnel Cloudflare para o listener WebSocket (porta 9001):
+	- `cd /workspaces/mqtt-qos-js`
+	- `curl -L https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64 -o cloudflared`
+	- `chmod +x cloudflared`
+	- `./cloudflared tunnel --url http://localhost:9001`
+
+3. Copie a URL `https://...trycloudflare.com` que aparecer no terminal.
+
+4. Configure o broker no Node-RED:
+	- Server/Host: dominio `trycloudflare.com` (sem `https://`)
+	- Port: `443`
+	- Connection: `wss` (WebSocket seguro)
+	- Path: `/`
+
+5. Assine os topicos:
+	- `casa/garagem/portao`
+	- `casa/escritorio/presenca/status`
+
+Observacao importante:
+- Quick Tunnel do Cloudflare funciona para HTTP/WebSocket. Para MQTT TCP direto (`mqtt://` em 1883), prefira broker publico (ex.: HiveMQ) ou named tunnel com cliente Cloudflare dos dois lados.
